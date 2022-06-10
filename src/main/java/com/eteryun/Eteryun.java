@@ -1,5 +1,6 @@
 package com.eteryun;
 
+import com.ramon.ultralight.UltralightEngine;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -14,6 +15,7 @@ public class Eteryun {
 
     public void start() {
         logger.info("Iniciando cliente");
+        new UltralightEngine();
     }
 
     public void shutdown() {

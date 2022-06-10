@@ -10,7 +10,9 @@ sourceCompatibility = 17
 targetCompatibility = 17
 
 def minecraftVersion = "1.18.1"
-def asmVersion = "9.2"
+def asmVersion = "9.3"
+def mixinVersion = "0.8.5"
+def ultralightJava = "0.4.12"
 def mainClass = "com.eteryun.launch.Main"
 
 version "1.0.0"
@@ -35,9 +37,12 @@ dependencies {
     implementation("com.github.heni123321:LegacyLauncher:ac106bbe00") {
         transitive = false
     }
-    implementation "org.spongepowered:mixin:0.8.5"
+    implementation "org.spongepowered:mixin:$mixinVersion"
 
     implementation "com.github.TheKodeToad.fabric-loom:fabric-loom:namedofficial-SNAPSHOT"
+
+    implementation "com.labymedia:ultralight-java-base:$ultralightJava"
+    implementation "com.labymedia:ultralight-java-databind:$ultralightJava"
 
     implementation "org.ow2.asm:asm:$asmVersion"
     implementation "org.ow2.asm:asm-analysis:$asmVersion"
