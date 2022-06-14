@@ -1,6 +1,8 @@
 package com.eteryun.launch;
 
+import net.minecraft.Util;
 import net.minecraft.launchwrapper.Launch;
+import net.minecraft.world.entity.player.Player;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,6 +12,8 @@ public class Main {
     public static void main(String[] args) {
         List<String> arguments = new ArrayList<>(Arrays.asList(args));
 
+        String username = "Player";
+
         arguments.add("--tweakClass");
         arguments.add("com.eteryun.launch.EteryunTweaker");
 
@@ -18,10 +22,10 @@ public class Main {
             arguments.add("dev");
 
             arguments.add("--username");
-            arguments.add("Player");
+            arguments.add(username);
 
             arguments.add("--uuid");
-            arguments.add("d4ad7c09-5497-4980-93b8-21d4be84fd08");
+            arguments.add(Player.createPlayerUUID(username).toString());
 
             arguments.add("--accessToken");
             arguments.add("0");

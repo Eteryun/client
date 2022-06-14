@@ -11,8 +11,12 @@
     "client.MinecraftMixin",
     "client.MouseHandlerMixin",
 
+    "entity.PlayerMixin",
+
     "gui.GuiMixin",
 
-    "platform.WindowMixin"
+    "platform.WindowMixin",
+
+    "renderer.PlayerRendererMixin"
   ]
 }
