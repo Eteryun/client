@@ -13,6 +13,8 @@
 
     "entity.PlayerMixin",
 
+    "network.ClientPacketListenerMixin",
+
     "gui.GuiMixin",
 
     "platform.WindowMixin",

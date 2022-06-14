@@ -47,7 +47,7 @@ public class EteryunTweaker implements ITweaker {
         final MixinEnvironment environment = MixinEnvironment.getDefaultEnvironment();
 
         if (environment.getObfuscationContext() == null) {
-            environment.setObfuscationContext("named:intermediary");
+            environment.setObfuscationContext("named:official");
         }
 
         environment.setSide(MixinEnvironment.Side.CLIENT);
