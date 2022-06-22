@@ -12,7 +12,7 @@ public class Main {
     public static void main(String[] args) {
         List<String> arguments = new ArrayList<>(Arrays.asList(args));
 
-        String username = "Player";
+        String username = "Player" + Util.getMillis() % 1000L;
 
         arguments.add("--tweakClass");
         arguments.add("com.eteryun.launch.EteryunTweaker");

@@ -1,18 +1,24 @@
 package com.eteryun.mixin.renderer;
 
 import com.eteryun.extensions.IPlayer;
+import com.eteryun.renderer.layers.BacktooLayer;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EquipmentSlot;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import java.io.IOException;
 
 @Mixin(PlayerRenderer.class)
 public abstract class PlayerRendererMixin extends LivingEntityRenderer<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> {
@@ -20,12 +26,16 @@ public abstract class PlayerRendererMixin extends LivingEntityRenderer<AbstractC
         super(context, entityModel, f);
     }
 
+    @Inject(method = "<init>", at = @At("RETURN"))
+    private void constructor(EntityRendererProvider.Context context, boolean bl, CallbackInfo ci) {
+        addLayer(new BacktooLayer<>(this));
+    }
+
     @Shadow
     protected abstract void setModelProperties(AbstractClientPlayer pClientPlayer);
 
     @Inject(at = @At("HEAD"), method = "render", cancellable = true)
-    private void render(AbstractClientPlayer pEntity, float pEntityYaw, float pPartialTicks, PoseStack pMatrixStack, MultiBufferSource pBuffer, int pPackedLight, CallbackInfo callback)
-    {
+    private void render(AbstractClientPlayer pEntity, float pEntityYaw, float pPartialTicks, PoseStack pMatrixStack, MultiBufferSource pBuffer, int pPackedLight, CallbackInfo callback) {
         this.setModelProperties(pEntity);
         IPlayer player = (IPlayer) pEntity;
         float scale = player.getScaleRender();

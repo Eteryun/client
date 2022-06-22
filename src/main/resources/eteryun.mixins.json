@@ -11,14 +11,27 @@
     "client.MinecraftMixin",
     "client.MouseHandlerMixin",
 
+    "entity.EquipmentSlotMixin",
+    "entity.EquipmentSlotMixin$TypeMixin",
+    "entity.InventoryMixin",
+    "entity.LivingEntityMixin",
     "entity.PlayerMixin",
 
     "network.ClientPacketListenerMixin",
 
+    "gui.CreativeModeInventoryScreenMixin",
     "gui.GuiMixin",
+
+    "inventory.InventoryMenuMixin",
+
+    "packs.VanillaPackResourcesMixins",
 
     "platform.WindowMixin",
 
-    "renderer.PlayerRendererMixin"
+    "renderer.BlockModelMixin",
+    "renderer.ItemTransformsMixin$DeserializerMixin",
+    "renderer.ItemTransformsMixin$TransformTypeMixin",
+    "renderer.PlayerRendererMixin",
+    "renderer.SheetsMixin"
   ]
 }
