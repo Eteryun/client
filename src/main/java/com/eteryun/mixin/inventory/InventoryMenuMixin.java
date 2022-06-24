@@ -21,9 +21,8 @@ public abstract class InventoryMenuMixin extends RecipeBookMenu<CraftingContaine
     public void constructor(Inventory inventory, boolean bl, Player player, CallbackInfo ci) {
         this.addSlot(new Slot(inventory, 41, 77, 44) {
             public boolean mayPlace(ItemStack itemstack) {
-                if (itemstack.getItem() instanceof SwordItem || itemstack.getItem() instanceof AxeItem ||
-                        itemstack.getItem() instanceof PickaxeItem || itemstack.getItem() instanceof ShovelItem ||
-                        itemstack.getItem() instanceof BowItem || itemstack.getItem() instanceof CrossbowItem)
+                if (itemstack.getItem() instanceof SwordItem || itemstack.getItem() instanceof DiggerItem ||
+                        itemstack.getItem() instanceof ProjectileWeaponItem)
                     return true;
                 return false;
             }

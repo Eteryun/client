@@ -8,8 +8,10 @@
   "mixins": [
     "client.GameRendererMixin",
     "client.KeyboardHandlerMixin",
+    "client.KeyMappingAccessor",
     "client.MinecraftMixin",
     "client.MouseHandlerMixin",
+    "client.OptionsMixin",
 
     "entity.EquipmentSlotMixin",
     "entity.EquipmentSlotMixin$TypeMixin",

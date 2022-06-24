@@ -1,6 +1,7 @@
 package com.eteryun.network;
 
 import com.eteryun.Eteryun;
+import com.eteryun.network.server.ServerboundPacketPlayerAction;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -11,6 +12,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.network.protocol.game.ServerboundCustomPayloadPacket;
+import org.apache.logging.log4j.core.jmx.Server;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
@@ -29,9 +31,9 @@ public class PacketsProtocol {
 //                new PacketSet()
 //                        .addPacket(ClientBoundPacket.class, ClientBoundPacket::new));
 
-//        flows.put(PacketFlow.SERVERBOUND,
-//                new PacketSet()
-//                        .addPacket(ServerBoundPacket.class, ServerBoundPacket::new));
+        flows.put(PacketFlow.SERVERBOUND,
+                new PacketSet()
+                        .addPacket(ServerboundPacketPlayerAction.class, ServerboundPacketPlayerAction::new));
     }
 
     @Nullable
