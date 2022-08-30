@@ -104,7 +104,6 @@ public class EventManager {
             }
         }
     }
-
     public static boolean call(Event event) {
         event.call();
         return event.isCanceled();

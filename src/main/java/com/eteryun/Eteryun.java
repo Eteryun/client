@@ -2,6 +2,9 @@ package com.eteryun;
 
 import com.eteryun.event.EventManager;
 import com.eteryun.network.PacketsProtocol;
+import com.eteryun.ui.events.UIEventManager;
+import com.eteryun.ui.events.impl.DefaultEvents;
+import com.eteryun.ui.events.impl.OptionsEvents;
 import com.ramon.ultralight.UltralightEngine;
 import net.minecraft.client.KeyMapping;
 import org.apache.logging.log4j.LogManager;
@@ -17,7 +20,7 @@ public class Eteryun {
 
     public void init() {
         logger.info("Inicializando cliente");
-        KeyMappingsRegistry.registerKeyMapping(keyBackTool);
+        KeyMappingsHelper.registerKeyMapping(keyBackTool);
     }
 
     public void start() {
@@ -25,8 +28,9 @@ public class Eteryun {
         new UltralightEngine();
         PacketsProtocol.registerPackets();
 
-
         EventManager.register(new Events());
+        UIEventManager.getInstance().register(new DefaultEvents());
+        UIEventManager.getInstance().register(new OptionsEvents());
     }
 
     public void shutdown() {

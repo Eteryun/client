@@ -1,6 +1,6 @@
 package com.eteryun.mixin.client;
 
-import com.eteryun.KeyMappingsRegistry;
+import com.eteryun.KeyMappingsHelper;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Options;
 import org.spongepowered.asm.mixin.Final;
@@ -20,6 +20,6 @@ public class OptionsMixin {
 
     @Inject(method = "load", at = @At("HEAD"))
     public void load(CallbackInfo ci) {
-        this.keyMappings = KeyMappingsRegistry.process(this.keyMappings);
+        this.keyMappings = KeyMappingsHelper.process(this.keyMappings);
     }
 }

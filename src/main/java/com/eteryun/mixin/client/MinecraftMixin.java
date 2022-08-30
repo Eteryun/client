@@ -2,6 +2,7 @@ package com.eteryun.mixin.client;
 
 import com.eteryun.Eteryun;
 import com.eteryun.event.EventManager;
+import com.eteryun.event.impl.screen.GuiOpenEvent;
 import com.eteryun.event.impl.tick.RenderTickEvent;
 import com.eteryun.event.impl.tick.TickEvent;
 import com.eteryun.screens.EmptyScreen;
@@ -10,8 +11,11 @@ import com.ramon.ultralight.UltralightEngine;
 import com.ramon.ultralight.View;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Timer;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.screens.OptionsScreen;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.TitleScreen;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
@@ -32,6 +36,9 @@ public abstract class MinecraftMixin {
     @Shadow
     @Final
     private Timer timer;
+
+    @Shadow
+    public Screen screen;
 
     private boolean isStarted = false;
 
@@ -65,16 +72,24 @@ public abstract class MinecraftMixin {
         EventManager.call(event);
     }
 
-    @Inject(method = "setScreen", at = @At(value = "HEAD"), cancellable = true)
+    @Inject(method = "setScreen", at = @At(value = "FIELD", target = "Lnet/minecraft/client/Minecraft;screen:Lnet/minecraft/client/gui/screens/Screen;", shift = At.Shift.AFTER), cancellable = true)
     private void updateScreen(Screen screen, CallbackInfo ci) {
-        View view = UltralightEngine.getActiveView();
-        if (view instanceof View.ScreenView){
-            UltralightEngine.getInstance().removeView(view.getName());
+//        View view = UltralightEngine.getActiveView();
+//        if (view instanceof View.ScreenView){
+//            UltralightEngine.getInstance().removeView(view.getName());
+//        }
+
+        GuiOpenEvent event = new GuiOpenEvent(screen);
+        if (EventManager.call(event)) {
+            ci.cancel();
+        } else if (!event.getGui().equals(screen)) {
+            this.screen = event.getGui();
         }
     }
 
     /**
      * @author Eteryun
+     * @reason
      */
     @Overwrite
     private String createTitle() {

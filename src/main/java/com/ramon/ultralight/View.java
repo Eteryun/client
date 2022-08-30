@@ -121,8 +121,8 @@ public class View {
 
 	public void sendViewMessage(String type, Object obj) {
 		try {
-			ultralightView.evaluateScript("window.dispatchEvent(new CustomEvent(\"mMessage\", { detail: { type: '"
-					+ type + "', data: '" + obj + "' } }));");
+			ultralightView.evaluateScript("window.postMessage({ detail: { type: '"
+					+ type + "', content: '" + obj + "' } }, '*');");
 		} catch (JavascriptEvaluationException e) {
 			e.printStackTrace();
 		}

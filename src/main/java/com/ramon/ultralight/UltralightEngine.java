@@ -52,6 +52,9 @@ public class UltralightEngine {
 		logger.info("Carregando Bibliotecas");
 		UltralightResources.loadLibraries();
 
+		logger.info("Baixando as telas");
+		UltralightResources.downloadNUIS();
+
 		logger.info("Configurando plataforma do Ultralight");
 		platform = UltralightPlatform.instance();
 		UltralightConfig config = new UltralightConfig();

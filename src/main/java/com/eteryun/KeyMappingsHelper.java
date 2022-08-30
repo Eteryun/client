@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public class KeyMappingsRegistry {
+public class KeyMappingsHelper {
     private static final List<KeyMapping> keyMappings = new ArrayList<>();
 
     private static Map<String, Integer> getCategories() {
@@ -33,6 +33,13 @@ public class KeyMappingsRegistry {
         if (!hasCategory(keyMapping.getCategory()))
             addCategory(keyMapping.getCategory());
         return keyMappings.add(keyMapping) ? keyMapping : null;
+    }
+
+    public static KeyMapping[] registerKeyMappings(KeyMapping... keyMappings) {
+        for (KeyMapping keyMapping : keyMappings) {
+            registerKeyMapping(keyMapping);
+        }
+        return keyMappings;
     }
 
     public static KeyMapping[] process(KeyMapping[] allKeyMappings) {

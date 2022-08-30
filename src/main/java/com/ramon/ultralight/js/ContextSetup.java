@@ -1,6 +1,7 @@
 package com.ramon.ultralight.js;
 
 import com.eteryun.Eteryun;
+import com.eteryun.ui.events.UIEventManager;
 import com.labymedia.ultralight.databind.api.JavaAPI;
 import com.labymedia.ultralight.javascript.JavascriptContext;
 import com.labymedia.ultralight.javascript.JavascriptGlobalContext;
@@ -31,6 +32,9 @@ public class ContextSetup {
 
 		JavascriptValue translatedApi = view.databind.getConversionUtils().toJavascript(context, javaApi);
 		globalObject.setProperty("java", translatedApi, 0);
+
+		globalObject.setProperty("uievent",
+				view.databind.getConversionUtils().toJavascript(context, UIEventManager.getInstance()), 0);
 
 		if (view instanceof ScreenView) {
 			ScreenView screenView = (ScreenView) view;
