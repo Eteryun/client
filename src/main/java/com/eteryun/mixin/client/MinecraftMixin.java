@@ -1,0 +1,38 @@
+package com.eteryun.mixin.client;
+
+import com.eteryun.Eteryun;
+import com.eteryun.utils.Constants;
+import net.minecraft.client.Minecraft;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+@Mixin(Minecraft.class)
+public abstract class MinecraftMixin {
+    private boolean isStarted = false;
+
+    @Inject(method = "checkIs64Bit", at = @At("RETURN"))
+    private static void client(CallbackInfoReturnable<Boolean> ci) {
+        Eteryun.getInstance().init();
+    }
+
+    @Inject(method = "resizeDisplay", at = @At("RETURN"))
+    private void startClient(CallbackInfo ci) {
+        if (isStarted) return;
+
+        Eteryun.getInstance().start();
+        isStarted = true;
+    }
+
+    @Inject(method = "close", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/VirtualScreen;close()V"))
+    private void close(CallbackInfo ci) {
+        Eteryun.getInstance().shutdown();
+    }
+
+    @Inject(method = "createTitle", at = @At("HEAD"), cancellable = true)
+    private void createTitle(CallbackInfoReturnable<String> cir) {
+        cir.setReturnValue(Constants.ClientName + " v" + Constants.ClientVersion);
+    }
+}
