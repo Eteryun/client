@@ -1,5 +1,6 @@
 package com.eteryun.modules.cef;
 
+import com.eteryun.modules.cef.extension.CefAppAccess;
 import com.mojang.logging.LogUtils;
 import me.friwi.jcefmaven.CefAppBuilder;
 import me.friwi.jcefmaven.CefInitializationException;
@@ -35,7 +36,10 @@ public class CefManager {
 
     public static List<CefBrowserCustom> browserList = new ArrayList<>();
 
+    private static boolean initialized = false;
+
     public static void init() {
+        if (initialized) return;
         CefSettings cefSettings = new CefSettings();
         cefSettings.windowless_rendering_enabled = true;
         cefSettings.locale = Minecraft.getInstance().getLanguageManager().getSelected().getName();
@@ -49,7 +53,7 @@ public class CefManager {
         });
 
         try {
-            cefApp = CefInitializer.initialize(dataDir,  new LinkedList<>(), cefSettings); // builder.build();
+            cefApp = CefInitializer.initialize(dataDir, new LinkedList<>(), cefSettings); // builder.build();
             cefClient = cefApp.createClient();
 
             CefApp.CefVersion version = cefApp.getVersion();
@@ -60,11 +64,13 @@ public class CefManager {
         } catch (CefInitializationException e) {
             LOGGER.error("Chromium embedded framework failed:");
             e.printStackTrace();
+        } finally {
+            initialized = true;
         }
     }
 
     public static void update() {
-        cefApp.doMessageLoopWork(0L);
+        ((CefAppAccess) cefApp).doLoopWork();
 
         browserList.forEach(CefBrowserCustom::update);
     }

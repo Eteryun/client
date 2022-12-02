@@ -6,6 +6,7 @@
   "package": "com.eteryun.modules.cef.mixin",
   "mixins": [
     "client.MinecraftMixin",
+    "cef.CefAppMixin",
     "cef.CefInitializerMixin",
     "cef.SystemBootstrapMixin"
   ]
