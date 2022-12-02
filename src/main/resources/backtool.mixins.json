@@ -1,7 +1,7 @@
 {
   "required": true,
   "minVersion": "0.8.5",
-  "refmap": "cef.mixins.refmap.json",
+  "refmap": "backtool.mixins.refmap.json",
   "compatibilityLevel": "JAVA_17",
   "package": "com.eteryun.modules.backtool.mixin",
   "mixins": [
