@@ -33,6 +33,6 @@ public abstract class MinecraftMixin {
 
     @Inject(method = "createTitle", at = @At("HEAD"), cancellable = true)
     private void createTitle(CallbackInfoReturnable<String> cir) {
-        cir.setReturnValue(Constants.ClientName + " v" + Constants.ClientVersion);
+        cir.setReturnValue(Constants.CLIENT_NAME);
     }
 }

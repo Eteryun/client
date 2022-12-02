@@ -22,9 +22,14 @@ public abstract class MinecraftMixin {
         CefManager.init();
     }
 
-    @Inject(method = "runTick", at = @At(value = "INVOKE",target = "Lnet/minecraft/client/renderer/GameRenderer;render(FJZ)V", shift = At.Shift.BEFORE))
+    @Inject(method = "runTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/GameRenderer;render(FJZ)V", shift = At.Shift.BEFORE))
     public void runTick(boolean bl, CallbackInfo ci) {
         CefManager.update();
+    }
+
+    @Inject(method = "close", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/VirtualScreen;close()V"))
+    public void close(CallbackInfo ci) {
+        CefManager.shutdown();
     }
 
     @Inject(method = "setScreen", at = @At(value = "FIELD", target = "Lnet/minecraft/client/Minecraft;screen:Lnet/minecraft/client/gui/screens/Screen;", shift = At.Shift.AFTER), cancellable = true)

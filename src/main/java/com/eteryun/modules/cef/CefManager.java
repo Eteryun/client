@@ -69,6 +69,12 @@ public class CefManager {
         }
     }
 
+    public static void shutdown() {
+        browserList.forEach((browser) -> browser.close(true));
+        cefApp.dispose();
+        cefClient.dispose();
+    }
+
     public static void update() {
         ((CefAppAccess) cefApp).doLoopWork();
 
