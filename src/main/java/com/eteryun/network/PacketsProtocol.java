@@ -24,18 +24,20 @@ import static com.eteryun.utils.Constants.ETERYUN_BRAND;
 public class PacketsProtocol {
     private static final Map<PacketFlow, PacketSet> flows = new HashMap<>();
 
-    public static void registerPackets() {
-//        flows.put(PacketFlow.CLIENTBOUND,
-//                new PacketSet()
-//                        .addPacket(ClientBoundPacket.class, ClientBoundPacket::new));
-
-//        flows.put(PacketFlow.SERVERBOUND,
-//                new PacketSet()
-//                        .addPacket(ServerBoundPacket.class, ServerBoundPacket::new));
+    public static <P extends Packet> void registerPacket(PacketFlow pDirection, Class<P> pPacketClass,
+                                                         Function<FriendlyByteBuf, P> pDeserializer) {
+        if (flows.containsKey(pDirection)) {
+            PacketSet packetSet = flows.get(pDirection);
+            packetSet.addPacket(pPacketClass, pDeserializer);
+        } else {
+            flows.put(pDirection,
+                    new PacketSet()
+                            .addPacket(pPacketClass, pDeserializer));
+        }
     }
 
     @Nullable
-    public static Packet createPacket(PacketFlow pDirection, int pPacketId, FriendlyByteBuf pBuffer){
+    public static Packet createPacket(PacketFlow pDirection, int pPacketId, FriendlyByteBuf pBuffer) {
         return flows.get(pDirection).createPacket(pPacketId, pBuffer);
     }
 
@@ -44,7 +46,7 @@ public class PacketsProtocol {
         return flows.get(pDirection).getId(pPacket.getClass());
     }
 
-    public static void sendPacket(Packet packet){
+    public static void sendPacket(Packet packet) {
         FriendlyByteBuf byteBuf = new FriendlyByteBuf(Unpooled.buffer());
 
         // write id

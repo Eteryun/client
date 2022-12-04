@@ -1,0 +1,21 @@
+{
+  "required": true,
+  "minVersion": "0.8.5",
+  "refmap": "backtoo.mixins.refmap.json",
+  "compatibilityLevel": "JAVA_17",
+  "package": "com.eteryun.modules.backtoo.mixin",
+  "mixins": [
+    "entity.EquipmentSlotMixin",
+    "entity.EquipmentSlotMixin$TypeMixin",
+    "entity.InventoryMixin",
+    "entity.LivingEntityMixin",
+    "gui.CreativeModeInventoryScreenMixin",
+    "inventory.InventoryMenuMixin",
+    "packs.VanillaPackResourcesMixin",
+    "renderer.BlockModelMixin",
+    "renderer.ItemTransformsMixin$DeserializerMixin",
+    "renderer.ItemTransformsMixin$TransformTypeMixin",
+    "renderer.PlayerRendererMixin",
+    "renderer.SheetsMixin"
+  ]
+}

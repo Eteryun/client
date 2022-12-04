@@ -5,7 +5,10 @@
   "compatibilityLevel": "JAVA_17",
   "package": "com.eteryun.mixin",
   "mixins": [
+    "client.KeyboardHandlerMixin",
+    "client.KeyMappingAccessor",
     "client.MinecraftMixin",
+    "client.OptionsMixin",
     "network.ClientPacketListenerMixin"
   ]
 }

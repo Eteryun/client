@@ -15,14 +15,15 @@ public abstract class MinecraftMixin {
 
     @Inject(method = "checkIs64Bit", at = @At("RETURN"))
     private static void client(CallbackInfoReturnable<Boolean> ci) {
-        Eteryun.getInstance().init();
+        Eteryun.getInstance().loadModules();
+        Eteryun.getInstance().preInit();
     }
 
     @Inject(method = "resizeDisplay", at = @At("RETURN"))
     private void startClient(CallbackInfo ci) {
         if (isStarted) return;
 
-        Eteryun.getInstance().start();
+        Eteryun.getInstance().init();
         isStarted = true;
     }
 

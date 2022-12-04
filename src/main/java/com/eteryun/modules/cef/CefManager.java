@@ -1,5 +1,7 @@
 package com.eteryun.modules.cef;
 
+import com.eteryun.modules.IModule;
+import com.eteryun.modules.Module;
 import com.eteryun.modules.cef.extension.CefAppAccess;
 import com.mojang.logging.LogUtils;
 import me.friwi.jcefmaven.CefAppBuilder;
@@ -25,7 +27,8 @@ import java.util.List;
 import static me.friwi.jcefmaven.EnumPlatform.PROPERTY_OS_ARCH;
 import static me.friwi.jcefmaven.EnumPlatform.PROPERTY_OS_NAME;
 
-public class CefManager {
+@Module
+public class CefManager implements IModule {
     public static final Logger LOGGER = LogUtils.getLogger();
 
     private static CefApp cefApp;
@@ -38,7 +41,12 @@ public class CefManager {
 
     private static boolean initialized = false;
 
-    public static void init() {
+    @Override
+    public void preInit() {
+
+    }
+
+    public void init() {
         if (initialized) return;
         CefSettings cefSettings = new CefSettings();
         cefSettings.windowless_rendering_enabled = true;
@@ -69,7 +77,7 @@ public class CefManager {
         }
     }
 
-    public static void shutdown() {
+    public void shutdown() {
         browserList.forEach((browser) -> browser.close(true));
         cefApp.dispose();
         cefClient.dispose();

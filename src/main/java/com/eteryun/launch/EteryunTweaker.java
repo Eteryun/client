@@ -45,7 +45,7 @@ public class EteryunTweaker implements ITweaker {
         Mixins.addConfiguration("eteryun.mixins.json");
         Mixins.addConfiguration("cef.mixins.json");
         Mixins.addConfiguration("playerscale.mixins.json");
-        Mixins.addConfiguration("backtool.mixins.json");
+        Mixins.addConfiguration("backtoo.mixins.json");
 
         final MixinEnvironment environment = MixinEnvironment.getDefaultEnvironment();
 

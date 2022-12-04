@@ -53,6 +53,8 @@ dependencies {
     annotationProcessor "org.ow2.asm:asm-commons:$asmVersion"
     annotationProcessor "org.ow2.asm:asm-tree:$asmVersion"
     annotationProcessor "org.ow2.asm:asm-util:$asmVersion"
+
+    implementation 'org.reflections:reflections:0.10.2'
 }
 
 loom {
