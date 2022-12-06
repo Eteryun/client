@@ -14,19 +14,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(Minecraft.class)
 public abstract class MinecraftMixin {
-    @Shadow
-    public abstract void setScreen(@Nullable Screen screen);
-
     @Inject(method = "runTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/GameRenderer;render(FJZ)V", shift = At.Shift.BEFORE))
     public void runTick(boolean bl, CallbackInfo ci) {
         CefManager.update();
-    }
-
-    @Inject(method = "setScreen", at = @At(value = "FIELD", target = "Lnet/minecraft/client/Minecraft;screen:Lnet/minecraft/client/gui/screens/Screen;", shift = At.Shift.AFTER), cancellable = true)
-    private void updateScreen(Screen screen, CallbackInfo ci) {
-//        if (screen instanceof OptionsScreen) {
-//            ci.cancel();
-//            setScreen(new CefScreen());
-//        }
     }
 }

@@ -1,6 +1,5 @@
 package com.eteryun.modules.backtoo;
 
-import com.eteryun.Eteryun;
 import com.eteryun.event.EventManager;
 import com.eteryun.event.EventTarget;
 import com.eteryun.event.impl.input.KeyInputEvent;

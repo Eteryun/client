@@ -75,8 +75,8 @@ public class MessageRouter extends CefMessageRouterHandlerAdapter {
 
         if (messageData != null) {
             try {
-                String result = (String) messageData.target.invoke(messageData.source, data);
-                callback.success(result);
+                Object result = messageData.target.invoke(messageData.source, data);
+                callback.success(result == null ? "{}" : String.valueOf(result));
                 return true;
             } catch (IllegalAccessException | InvocationTargetException ex) {
                 ex.printStackTrace();

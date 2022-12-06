@@ -23,7 +23,7 @@ import java.util.Set;
 import static org.lwjgl.glfw.GLFW.*;
 
 public class CefScreen extends Screen {
-    private CefBrowserCustom cefBrowser;
+    protected CefBrowserCustom cefBrowser;
     private static Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private ICefRenderer cefRenderer;
 

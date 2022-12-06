@@ -311,4 +311,8 @@ public class CefBrowserCustom extends CefBrowser_N implements CefRenderHandler {
         }
         super.finalize();
     }
+
+    public void sendMessage(String type, Object obj) {
+        executeJavaScript("window.postMessage({ detail: { type: '" + type + "', content: '" + obj + "' } }, '*');", "", 0);
+    }
 }
