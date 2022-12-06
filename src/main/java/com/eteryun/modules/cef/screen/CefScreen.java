@@ -46,6 +46,7 @@ public class CefScreen extends Screen {
         super.init();
         cefBrowser.setFocus(true);
         cefBrowser.wasResized_(minecraft.getWindow().getScreenWidth(), minecraft.getWindow().getScreenHeight());
+        cefBrowser.sendMessage("getTranslate", null);
     }
 
     @Override

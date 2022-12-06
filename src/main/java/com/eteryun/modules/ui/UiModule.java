@@ -44,10 +44,12 @@ public class UiModule implements IModule {
         if (screen instanceof OptionsScreen) {
             Screen lastScreen = Minecraft.getInstance().screen;
             try {
-                Field field = screen.getClass().getDeclaredField("lastScreen");
-                if (field.trySetAccessible()) {
-                    field.setAccessible(true);
-                    lastScreen = (Screen) field.get(null);
+                if (screen != null) {
+                    Field field = screen.getClass().getDeclaredField("lastScreen");
+                    if (field.trySetAccessible()) {
+                        field.setAccessible(true);
+                        lastScreen = (Screen) field.get(screen);
+                    }
                 }
             } catch (Exception e) {
                 e.printStackTrace();
