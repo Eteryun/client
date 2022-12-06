@@ -16,6 +16,7 @@ import org.cef.CefClient;
 import org.cef.CefSettings;
 import org.cef.browser.CefBrowser;
 import org.cef.browser.CefBrowserCustom;
+import org.cef.browser.CefMessageRouter;
 import org.slf4j.Logger;
 
 import java.io.File;
@@ -33,6 +34,8 @@ public class CefManager implements IModule {
 
     private static CefApp cefApp;
     public static CefClient cefClient;
+    public static CefMessageRouter cefRouter;
+    public static MessageRouter messageRouter;
 
     private static File dataDir = new File("cef");
     private static File cacheDir = new File("cef_cache");
@@ -40,6 +43,12 @@ public class CefManager implements IModule {
     public static List<CefBrowserCustom> browserList = new ArrayList<>();
 
     private static boolean initialized = false;
+
+    private static CefManager instance;
+
+    public CefManager() {
+        instance = this;
+    }
 
     @Override
     public void preInit() {
@@ -64,6 +73,10 @@ public class CefManager implements IModule {
             cefApp = CefInitializer.initialize(dataDir, new LinkedList<>(), cefSettings); // builder.build();
             cefClient = cefApp.createClient();
 
+            messageRouter = new MessageRouter();
+            cefRouter = CefMessageRouter.create(new CefMessageRouter.CefMessageRouterConfig("eteryunQuery", "eteryunQueryCancel"));
+            cefClient.addMessageRouter(cefRouter);
+            cefRouter.addHandler(messageRouter, false);
             CefApp.CefVersion version = cefApp.getVersion();
             LOGGER.info("Cef Loaded (jcefVersion=" + version.getJcefVersion() + ", cefVersion=" + version.getCefVersion() + ", chromeVersion=" + version.getChromeVersion() + ")");
         } catch (UnsupportedPlatformException e) {
@@ -75,6 +88,8 @@ public class CefManager implements IModule {
         } finally {
             initialized = true;
         }
+
+
     }
 
     public void shutdown() {
@@ -87,5 +102,13 @@ public class CefManager implements IModule {
         ((CefAppAccess) cefApp).doLoopWork();
 
         browserList.forEach(CefBrowserCustom::update);
+    }
+
+    public void registerQueryHandler(Object o) {
+        messageRouter.register(o);
+    }
+
+    public static CefManager getInstance() {
+        return instance;
     }
 }
