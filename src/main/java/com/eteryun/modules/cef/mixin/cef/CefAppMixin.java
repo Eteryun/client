@@ -8,7 +8,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(CefApp.class)
-public class CefAppMixin implements CefAppAccess {
+public abstract class CefAppMixin implements CefAppAccess {
+    @Shadow protected abstract void N_DoMessageLoopWork();
+
     @Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Ljavax/swing/SwingUtilities;isEventDispatchThread()Z"), remap = false)
     private boolean initIsEventDispatchThread() {
         return true;
@@ -37,9 +39,5 @@ public class CefAppMixin implements CefAppAccess {
     @Override
     public void doLoopWork() {
         N_DoMessageLoopWork();
-    }
-
-    @Shadow(remap = false)
-    private void N_DoMessageLoopWork() {
     }
 }

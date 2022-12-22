@@ -1,26 +1,24 @@
 package com.eteryun.modules.cef;
 
 import com.eteryun.modules.IModule;
-import com.eteryun.modules.Module;
 import com.eteryun.modules.cef.extension.CefAppAccess;
+import com.eteryun.utils.FileUtils;
 import com.mojang.logging.LogUtils;
-import me.friwi.jcefmaven.CefAppBuilder;
 import me.friwi.jcefmaven.CefInitializationException;
+import me.friwi.jcefmaven.EnumPlatform;
 import me.friwi.jcefmaven.MavenCefAppHandlerAdapter;
 import me.friwi.jcefmaven.UnsupportedPlatformException;
-import me.friwi.jcefmaven.impl.progress.ConsoleProgressHandler;
 import me.friwi.jcefmaven.impl.step.init.CefInitializer;
 import net.minecraft.client.Minecraft;
 import org.cef.CefApp;
 import org.cef.CefClient;
 import org.cef.CefSettings;
-import org.cef.browser.CefBrowser;
 import org.cef.browser.CefBrowserCustom;
 import org.cef.browser.CefMessageRouter;
 import org.slf4j.Logger;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -28,7 +26,6 @@ import java.util.List;
 import static me.friwi.jcefmaven.EnumPlatform.PROPERTY_OS_ARCH;
 import static me.friwi.jcefmaven.EnumPlatform.PROPERTY_OS_NAME;
 
-@Module
 public class CefManager implements IModule {
     public static final Logger LOGGER = LogUtils.getLogger();
 
@@ -57,6 +54,9 @@ public class CefManager implements IModule {
 
     public void init() {
         if (initialized) return;
+//        CefAppBuilder builder = new CefAppBuilder();
+//        builder.setInstallDir(dataDir);
+//        CefSettings cefSettings = builder.getCefSettings();
         CefSettings cefSettings = new CefSettings();
         cefSettings.windowless_rendering_enabled = true;
         cefSettings.locale = Minecraft.getInstance().getLanguageManager().getSelected().getName();
@@ -70,7 +70,8 @@ public class CefManager implements IModule {
         });
 
         try {
-            cefApp = CefInitializer.initialize(dataDir, new LinkedList<>(), cefSettings); // builder.build();
+            extract();
+            cefApp = CefInitializer.initialize(dataDir, new LinkedList<>(), cefSettings);
             cefClient = cefApp.createClient();
 
             messageRouter = new MessageRouter();
@@ -88,19 +89,16 @@ public class CefManager implements IModule {
         } finally {
             initialized = true;
         }
-
-
     }
 
     public void shutdown() {
         browserList.forEach((browser) -> browser.close(true));
-        cefApp.dispose();
         cefClient.dispose();
+//        cefApp.dispose();
     }
 
     public static void update() {
         ((CefAppAccess) cefApp).doLoopWork();
-
         browserList.forEach(CefBrowserCustom::update);
     }
 
@@ -108,7 +106,32 @@ public class CefManager implements IModule {
         messageRouter.register(o);
     }
 
+    public void unregisterQueryHandler(Object o) {
+//        messageRouter.unregister(o);
+    }
+
     public static CefManager getInstance() {
         return instance;
+    }
+
+    private void extract() {
+        try {
+            EnumPlatform platform = EnumPlatform.getCurrentPlatform();
+            File zip = new File("cef-" + platform.getIdentifier() + ".zip");
+            String sha1 = FileUtils.sha1Hash(zip.getAbsolutePath());
+
+            File lock = new File(dataDir, "install.lock");
+            if (!FileUtils.readFile(lock).equalsIgnoreCase(sha1)) {
+                CefExtractor.extract(zip, dataDir);
+
+                FileWriter versionWrite = new FileWriter(lock, false);
+                versionWrite.write(sha1);
+                versionWrite.close();
+            }
+        } catch (UnsupportedPlatformException | IOException e) {
+            throw new RuntimeException(e);
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

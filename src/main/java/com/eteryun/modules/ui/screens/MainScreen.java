@@ -4,7 +4,9 @@ import com.eteryun.modules.cef.query.QueryTarget;
 import com.eteryun.modules.cef.screen.CefScreen;
 import com.google.gson.JsonObject;
 import net.minecraft.Util;
+import net.minecraft.client.gui.screens.ConnectScreen;
 import net.minecraft.client.gui.screens.OptionsScreen;
+import net.minecraft.client.multiplayer.resolver.ServerAddress;
 
 public class MainScreen extends CefScreen {
     public MainScreen() {
@@ -13,7 +15,7 @@ public class MainScreen extends CefScreen {
 
     @QueryTarget(name = "connect/start")
     public void connect(JsonObject object) {
-
+        ConnectScreen.startConnecting(this, minecraft, new ServerAddress("209.222.97.175", 25634), null);
     }
 
     @QueryTarget(name = "open/link")

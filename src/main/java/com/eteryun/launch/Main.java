@@ -1,7 +1,8 @@
 package com.eteryun.launch;
 
+import com.eteryun.launch.agent.Agent;
+import cpw.mods.modlauncher.Launcher;
 import net.minecraft.Util;
-import net.minecraft.launchwrapper.Launch;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.ArrayList;
@@ -14,8 +15,10 @@ public class Main {
 
         String username = "Player" + Util.getMillis() % 1000L;
 
-        arguments.add("--tweakClass");
-        arguments.add("com.eteryun.launch.EteryunTweaker");
+        arguments.add("--launchTarget");
+        arguments.add("eteryunlaunch");
+
+
 
         if (Boolean.getBoolean("fabric.development")) {
             arguments.add("--version");
@@ -28,9 +31,10 @@ public class Main {
             arguments.add(Player.createPlayerUUID(username).toString());
 
             arguments.add("--accessToken");
-            arguments.add("0");
+            arguments.add("a");
         }
+        Agent.updateSecurity();
 
-        Launch.main(arguments.toArray(String[]::new));
+        Launcher.main(arguments.toArray(String[]::new));
     }
 }

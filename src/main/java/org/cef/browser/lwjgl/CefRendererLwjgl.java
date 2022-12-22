@@ -1,5 +1,6 @@
 package org.cef.browser.lwjgl;
 
+import com.eteryun.Eteryun;
 import com.eteryun.modules.cef.CefManager;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -9,14 +10,18 @@ import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.renderer.GameRenderer;
 import org.cef.browser.ICefRenderer;
+import org.lwjgl.opengl.EXTBGRA;
 
 import java.awt.*;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL12.*;
 
 public class CefRendererLwjgl implements ICefRenderer {
+    private static final ArrayList<Integer> GL_TEXTURES = new ArrayList<>();
+
     private final boolean transparent_;
     public int texture_id_ = 0;
     private int view_width_ = 0;
@@ -33,17 +38,20 @@ public class CefRendererLwjgl implements ICefRenderer {
         GlStateManager._enableTexture();
         texture_id_ = glGenTextures();
 
+        GL_TEXTURES.add(texture_id_);
+
         GlStateManager._bindTexture(texture_id_);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+//        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+//        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
         GlStateManager._bindTexture(0);
     }
 
     @Override
     public void destroy() {
         if(texture_id_ != 0) {
+            GL_TEXTURES.remove((Object)texture_id_);
             glDeleteTextures(texture_id_);
             texture_id_ = 0;
         }
@@ -62,7 +70,7 @@ public class CefRendererLwjgl implements ICefRenderer {
         Tesselator tesselator = Tesselator.getInstance();
         BufferBuilder bufferBuilder = tesselator.getBuilder();
 
-        GlStateManager._bindTexture(texture_id_);
+//        GlStateManager._bindTexture(texture_id_);
 
         RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
         RenderSystem.setShaderTexture(0, texture_id_);
@@ -132,7 +140,9 @@ public class CefRendererLwjgl implements ICefRenderer {
                 // Update/resize the whole texture.
                 view_width_ = width;
                 view_height_ = height;
-                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, view_width_, view_height_, 0, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, buffer);
+                glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
+                glPixelStorei(GL_UNPACK_SKIP_ROWS, 0);
+                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, view_width_, view_height_, 0, EXTBGRA.GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8_REV, buffer);
             } else {
                 glPixelStorei(GL_UNPACK_ROW_LENGTH, view_width_);
 
@@ -143,7 +153,7 @@ public class CefRendererLwjgl implements ICefRenderer {
                     else {
                         glPixelStorei(GL_UNPACK_SKIP_PIXELS, rect.x);
                         glPixelStorei(GL_UNPACK_SKIP_ROWS, rect.y);
-                        glTexSubImage2D(GL_TEXTURE_2D, 0, rect.x, rect.y, rect.width, rect.height, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, buffer);
+                        glTexSubImage2D(GL_TEXTURE_2D, 0, rect.x, rect.y, rect.width, rect.height, EXTBGRA.GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8_REV, buffer);
                     }
                 }
 
@@ -175,7 +185,7 @@ public class CefRendererLwjgl implements ICefRenderer {
             glPixelStorei(GL_UNPACK_ROW_LENGTH, width);
             glPixelStorei(GL_UNPACK_SKIP_PIXELS, skip_pixels);
             glPixelStorei(GL_UNPACK_SKIP_ROWS, skip_rows);
-            glTexSubImage2D(GL_TEXTURE_2D, 0, x, y, w, h, GL_BGRA, GL_UNSIGNED_BYTE, buffer);
+            glTexSubImage2D(GL_TEXTURE_2D, 0, x, y, w, h, EXTBGRA.GL_BGRA_EXT, GL_UNSIGNED_BYTE, buffer);
             glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
             glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
             glPixelStorei(GL_UNPACK_SKIP_ROWS, 0);

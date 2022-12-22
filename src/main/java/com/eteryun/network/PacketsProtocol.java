@@ -12,7 +12,6 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.network.protocol.game.ServerboundCustomPayloadPacket;
 
-import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,22 +25,17 @@ public class PacketsProtocol {
 
     public static <P extends Packet> void registerPacket(PacketFlow pDirection, Class<P> pPacketClass,
                                                          Function<FriendlyByteBuf, P> pDeserializer) {
-        if (flows.containsKey(pDirection)) {
-            PacketSet packetSet = flows.get(pDirection);
-            packetSet.addPacket(pPacketClass, pDeserializer);
-        } else {
-            flows.put(pDirection,
-                    new PacketSet()
-                            .addPacket(pPacketClass, pDeserializer));
-        }
+        PacketSet packetSet = flows.get(pDirection);
+        if (packetSet == null)
+            packetSet = new PacketSet();
+
+        flows.put(pDirection, packetSet.addPacket(pPacketClass, pDeserializer));
     }
 
-    @Nullable
     public static Packet createPacket(PacketFlow pDirection, int pPacketId, FriendlyByteBuf pBuffer) {
         return flows.get(pDirection).createPacket(pPacketId, pBuffer);
     }
 
-    @Nullable
     public static Integer getPacketId(PacketFlow pDirection, Packet pPacket) {
         return flows.get(pDirection).getId(pPacket.getClass());
     }
@@ -82,13 +76,11 @@ public class PacketsProtocol {
             }
         }
 
-        @Nullable
         public Integer getId(Class<?> pPacketClass) {
             int i = this.classToId.getInt(pPacketClass);
             return i == -1 ? null : i;
         }
 
-        @Nullable
         public Packet createPacket(int pPacketId, FriendlyByteBuf pBuffer) {
             Function<FriendlyByteBuf, ? extends Packet> function = this.idToDeserializer.get(pPacketId);
             return function != null ? function.apply(pBuffer) : null;

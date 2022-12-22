@@ -3,6 +3,7 @@ package org.cef.browser;
 import com.eteryun.modules.cef.CefManager;
 import com.eteryun.modules.cef.UnsafeExample;
 import org.cef.CefClient;
+import org.cef.browser.lwjgl.CefRendererLwjgl;
 import org.cef.callback.CefDragData;
 import org.cef.handler.CefRenderHandler;
 import org.cef.handler.CefScreenInfo;
@@ -29,20 +30,20 @@ public class CefBrowserCustom extends CefBrowser_N implements CefRenderHandler {
     private final Component dc_ = new Component() {
     };
 
-    public CefBrowserCustom(CefClient client, String url, boolean transparent, CefRequestContext context, ICefRenderer renderer) {
-        this(client, url, transparent, context, renderer, null, null);
+    public CefBrowserCustom(CefClient client, String url, boolean transparent, CefRequestContext context) {
+        this(client, url, transparent, context, null, null);
     }
 
-    public CefBrowserCustom(CefClient client, String url, boolean isTransparent_, CefRequestContext context, ICefRenderer renderer, CefBrowserCustom parent, Point inspectAt) {
+    public CefBrowserCustom(CefClient client, String url, boolean isTransparent_, CefRequestContext context, CefBrowserCustom parent, Point inspectAt) {
         super(client, url, context, parent, inspectAt);
         this.isTransparent_ = isTransparent_;
-        renderer_ = renderer;
+        renderer_ = new CefRendererLwjgl(true);;
         CefManager.browserList.add(this);
     }
 
     @Override
     protected CefBrowser_N createDevToolsBrowser(CefClient client, String url, CefRequestContext context, CefBrowser_N parent, Point inspectAt) {
-        return new CefBrowserCustom(client, url, this.isTransparent_, context, null, this, inspectAt);
+        return new CefBrowserCustom(client, url, this.isTransparent_, context, this, inspectAt);
     }
 
     @Override
@@ -207,6 +208,10 @@ public class CefBrowserCustom extends CefBrowser_N implements CefRenderHandler {
         this.dc_.setBounds(this.browser_rect_);
         this.dc_.setVisible(true);
         super.wasResized(width, height);
+    }
+
+    public void draw(double x1, double y1, double x2, double y2) {
+        renderer_.render(x1, y1, x2, y2);
     }
 
     public void mouseMoved(int x, int y, int mods) {

@@ -4,7 +4,6 @@ import com.eteryun.event.EventManager;
 import com.eteryun.event.EventTarget;
 import com.eteryun.event.impl.input.KeyInputEvent;
 import com.eteryun.modules.IModule;
-import com.eteryun.modules.Module;
 import com.eteryun.modules.backtoo.network.server.ServerboundPacketPlayerAction;
 import com.eteryun.network.PacketsProtocol;
 import com.eteryun.utils.KeyMappingsHelper;
@@ -13,7 +12,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.network.protocol.PacketFlow;
 import org.lwjgl.glfw.GLFW;
 
-@Module
 public class BacktooModule implements IModule {
     private final KeyMapping KEY_BACK_TOOL = new KeyMapping("et.swap.backtool", GLFW.GLFW_KEY_G, KeyMapping.CATEGORY_INVENTORY);
     private Minecraft minecraft = Minecraft.getInstance();

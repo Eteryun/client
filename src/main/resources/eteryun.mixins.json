@@ -1,7 +1,7 @@
 {
   "required": true,
   "minVersion": "0.8.5",
-  "refmap": "eteryun.mixins.refmap.json",
+  "refmap": "eteryun-refmap.json",
   "compatibilityLevel": "JAVA_17",
   "package": "com.eteryun.mixin",
   "mixins": [

@@ -7,8 +7,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.LoadingOverlay;
 import net.minecraft.server.packs.resources.ReloadInstance;
 import org.cef.browser.CefBrowserCustom;
-import org.cef.browser.ICefRenderer;
-import org.cef.browser.lwjgl.CefRendererLwjgl;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -25,12 +23,10 @@ public class LoadingOverlayMixin {
     @Shadow @Final private Minecraft minecraft;
     @Shadow @Final private Consumer<Optional<Throwable>> onFinish;
     protected CefBrowserCustom cefBrowser;
-    private ICefRenderer cefRenderer;
 
     @Inject(method = "<init>", at = @At("RETURN"))
     private void init(Minecraft minecraft, ReloadInstance reloadInstance, Consumer consumer, boolean bl, CallbackInfo ci) {
-        cefRenderer = new CefRendererLwjgl(true);
-        cefBrowser = new CefBrowserCustom(CefManager.cefClient, "https://ui.eteryun.com.br/loading/", true, null, cefRenderer);
+        cefBrowser = new CefBrowserCustom(CefManager.cefClient, "https://ui.eteryun.com.br/loading/", true, null);
         cefBrowser.setCloseAllowed();
         cefBrowser.createImmediately();
         cefBrowser.setFocus(true);
@@ -39,10 +35,9 @@ public class LoadingOverlayMixin {
     @Inject(method = "render", at = @At("HEAD"), cancellable = true)
     private void render(PoseStack poseStack, int i, int j, float f, CallbackInfo ci) {
         ci.cancel();
-        GlStateManager._enableDepthTest();
-        GlStateManager._enableTexture();
         cefBrowser.wasResized_(this.minecraft.getWindow().getScreenWidth(), this.minecraft.getWindow().getScreenHeight());
-        cefRenderer.render(0,0, minecraft.getWindow().getGuiScaledWidth(), minecraft.getWindow().getGuiScaledHeight());
+        GlStateManager._enableDepthTest();
+        cefBrowser.draw(0,0, minecraft.getWindow().getGuiScaledWidth(), minecraft.getWindow().getGuiScaledHeight());
         GlStateManager._disableDepthTest();
 
         cefBrowser.sendMessage("updateProgress", this.reload.getActualProgress() * 100);
@@ -59,7 +54,13 @@ public class LoadingOverlayMixin {
             }
 
             this.minecraft.setOverlay(null);
+            remove();
             cefBrowser.sendMessage("forceUpdate", null);
         }
+    }
+
+    public void remove(){
+        CefManager.getInstance().unregisterQueryHandler(this);
+        cefBrowser.close(true);
     }
 }

@@ -31,6 +31,11 @@ public class SettingsScreen extends CefScreen {
         this(null, hasBackground);
     }
 
+    @Override
+    public boolean shouldCloseOnEsc() {
+        return false;
+    }
+
     @QueryTarget(name = "getOption")
     public Object getOption(String name) {
         try {
@@ -192,12 +197,6 @@ public class SettingsScreen extends CefScreen {
     @QueryTarget(name = "return")
     public void ret(JsonObject object) {
         minecraft.setScreen(lastScreen);
-    }
-
-    @Override
-    public void onClose() {
-        minecraft.setScreen(lastScreen);
-        cefBrowser.close(true);
     }
 
     public <T> T getDeclaredField(Object obj, String name) {

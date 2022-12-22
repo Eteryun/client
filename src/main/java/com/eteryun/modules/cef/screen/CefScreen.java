@@ -2,35 +2,34 @@ package com.eteryun.modules.cef.screen;
 
 import com.eteryun.modules.cef.CefManager;
 import com.eteryun.modules.cef.query.QueryTarget;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.eteryun.utils.TranslateUtils;
 import com.google.gson.JsonObject;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.chat.NarratorChatListener;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.locale.Language;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.network.chat.Component;
 import org.cef.browser.CefBrowserCustom;
-import org.cef.browser.ICefRenderer;
-import org.cef.browser.lwjgl.CefRendererLwjgl;
 import org.lwjgl.glfw.GLFW;
-
-import java.io.IOException;
-import java.util.Set;
 
 import static org.lwjgl.glfw.GLFW.*;
 
 public class CefScreen extends Screen {
     protected CefBrowserCustom cefBrowser;
-    private static Gson GSON = new GsonBuilder().setPrettyPrinting().create();
-    private ICefRenderer cefRenderer;
+    protected boolean isLoaded = false;
 
     public CefScreen(String url) {
-        super(new TextComponent("CefScreen"));
-        cefRenderer = new CefRendererLwjgl(true);
-        cefBrowser = new CefBrowserCustom(CefManager.cefClient, url, true, null, cefRenderer);
+        super(NarratorChatListener.NO_TITLE);
+        cefBrowser = new CefBrowserCustom(CefManager.cefClient, url, true, null);
+        cefBrowser.setCloseAllowed();
+        cefBrowser.createImmediately();
+
+        CefManager.getInstance().registerQueryHandler(this);
+    }
+
+    public CefScreen(String url, Component component) {
+        super(component);
+        cefBrowser = new CefBrowserCustom(CefManager.cefClient, url, true, null);
         cefBrowser.setCloseAllowed();
         cefBrowser.createImmediately();
 
@@ -51,8 +50,13 @@ public class CefScreen extends Screen {
 
     @Override
     public void onClose() {
+        remove();
         super.onClose();
-        cefBrowser.close(true);
+    }
+
+    @Override
+    public void removed() {
+        remove();
     }
 
     public void loadUrl(String url) {
@@ -60,13 +64,16 @@ public class CefScreen extends Screen {
     }
 
     @Override
+    public void tick() {
+        cefBrowser.wasResized_(minecraft.getWindow().getScreenWidth(), minecraft.getWindow().getScreenHeight());
+    }
+
+    @Override
     public void render(PoseStack poseStack, int mouseX, int mouseY, float delta) {
         super.render(poseStack, mouseX, mouseY, delta);
 
         GlStateManager._enableDepthTest();
-        GlStateManager._enableTexture();
-        cefBrowser.wasResized_(minecraft.getWindow().getScreenWidth(), minecraft.getWindow().getScreenHeight());
-        cefRenderer.render(0,0, width, height);
+        cefBrowser.draw(0, 0, width, height);
         GlStateManager._disableDepthTest();
     }
 
@@ -98,7 +105,7 @@ public class CefScreen extends Screen {
 
     @Override
     public boolean mouseScrolled(double xPos, double yPos, double scrolled) {
-        cefBrowser.mouseScrolled((int) minecraft.mouseHandler.xpos(), (int) minecraft.mouseHandler.ypos(), 0, 1, (int)scrolled * 120);
+        cefBrowser.mouseScrolled((int) minecraft.mouseHandler.xpos(), (int) minecraft.mouseHandler.ypos(), 0, 1, (int) scrolled * 120);
         return super.mouseScrolled(xPos, yPos, scrolled);
     }
 
@@ -147,18 +154,16 @@ public class CefScreen extends Screen {
 
     @QueryTarget(name = "getTranslate")
     public String getTranslate(JsonObject object) {
-        JsonObject translate = new JsonObject();
-        String string = String.format("lang/%s.json", minecraft.options.languageCode);
-        Set<String> namespaces = minecraft.getResourceManager().getNamespaces();
-        namespaces.forEach(namespace -> {
-            ResourceLocation resourceLocation = new ResourceLocation(namespace, string);
-            try {
-                Resource resource = minecraft.getResourceManager().getResource(resourceLocation);
-                Language.loadFromJson(resource.getInputStream(), translate::addProperty);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
-        return GSON.toJson(translate);
+        return TranslateUtils.getJson();
+    }
+
+    @QueryTarget(name = "loaded")
+    public void setLoaded(JsonObject jsonObject) {
+        isLoaded = true;
+    }
+
+    public void remove(){
+        cefBrowser.close(true);
+        CefManager.getInstance().unregisterQueryHandler(this);
     }
 }
