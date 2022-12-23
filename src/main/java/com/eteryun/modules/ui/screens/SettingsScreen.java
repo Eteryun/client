@@ -45,7 +45,8 @@ public class SettingsScreen extends CefScreen {
                 return progressOption.get(minecraft.options);
             } else if (field.getType() == CycleOption.class) {
                 CycleOption cycleOption = (CycleOption) field.get(null);
-                Function<Options, ?> getter = getDeclaredField(cycleOption, "getter");
+                String getterFieldName = Boolean.getBoolean("fabric.development") ? "getter" : "ag";
+                Function<Options, ?> getter = getDeclaredField(cycleOption, getterFieldName);
                 if (getter != null) {
                     Object value = getter.apply(minecraft.options);
                     if (value instanceof Enum<?>)
@@ -73,10 +74,12 @@ public class SettingsScreen extends CefScreen {
                 minecraft.options.save();
             } else if (field.getType() == CycleOption.class) {
                 CycleOption cycleOption = (CycleOption) field.get(null);
-                CycleOption.OptionSetter setter = getDeclaredField(cycleOption, "setter");
+                String setterFieldName = Boolean.getBoolean("fabric.development") ? "setter" : "af";
+                CycleOption.OptionSetter setter = getDeclaredField(cycleOption, setterFieldName);
                 if (setter != null) {
                     JsonElement value = object.get("value");
-                    Function<Options, ?> getter = getDeclaredField(cycleOption, "getter");
+                    String getterFieldName = Boolean.getBoolean("fabric.development") ? "getter" : "ag";
+                    Function<Options, ?> getter = getDeclaredField(cycleOption, getterFieldName);
                     Object lastValue = getter.apply(minecraft.options);
                     if (lastValue instanceof Enum<?>) {
                         setter.accept(minecraft.options, cycleOption, lastValue.getClass().getEnumConstants()[value.getAsInt()]);
