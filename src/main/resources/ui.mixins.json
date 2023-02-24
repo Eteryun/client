@@ -7,6 +7,7 @@
   "mixins": [
     "gui.ConnectScreenMixin",
     "gui.LoadingOverlayMixin",
-    "gui.ReceivingLevelScreenMixin"
+    "gui.ReceivingLevelScreenMixin",
+    "gui.GuiMixin"
   ]
 }

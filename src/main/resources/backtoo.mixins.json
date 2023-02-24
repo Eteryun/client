@@ -9,6 +9,7 @@
     "entity.EquipmentSlotMixin$TypeMixin",
     "entity.InventoryMixin",
     "entity.LivingEntityMixin",
+    "entity.PlayerMixin",
     "gui.CreativeModeInventoryScreenMixin",
     "inventory.InventoryMenuMixin",
     "packs.VanillaPackResourcesMixin",

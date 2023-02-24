@@ -39,8 +39,8 @@ public class Eteryun {
     }
 
     public void loadModules() {
-        modules.add(new BacktooModule());
         modules.add(new CefManager());
+        modules.add(new BacktooModule());
         modules.add(new UiModule());
     }
 }

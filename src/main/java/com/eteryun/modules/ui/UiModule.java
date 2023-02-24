@@ -16,6 +16,8 @@ import net.minecraft.network.chat.TranslatableComponent;
 import java.lang.reflect.Field;
 
 public class UiModule implements IModule {
+    InGameGui gui;
+
     @Override
     public void preInit() {
         EventManager.register(this);
@@ -23,7 +25,7 @@ public class UiModule implements IModule {
 
     @Override
     public void init() {
-
+        gui = new InGameGui();
     }
 
     @Override

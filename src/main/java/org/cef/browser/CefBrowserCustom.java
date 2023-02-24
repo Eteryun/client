@@ -318,6 +318,6 @@ public class CefBrowserCustom extends CefBrowser_N implements CefRenderHandler {
     }
 
     public void sendMessage(String type, Object obj) {
-        executeJavaScript("window.postMessage({ detail: { type: '" + type + "', content: '" + obj + "' } }, '*');", "", 0);
+        executeJavaScript("window.postMessage({ detail: { type: '" + type + "', content: " + obj + " } }, '*');", "", 0);
     }
 }

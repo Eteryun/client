@@ -14,7 +14,7 @@ public class Event {
     }
 
     public void setCanceled(boolean cancel) {
-        if (!isCanceled())
+        if (!isCancelable())
             throw new UnsupportedOperationException(
                     "Attempted to call Event#setCanceled() on a non-cancelable event of type: "
                             + this.getClass().getCanonicalName());
