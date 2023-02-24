@@ -7,6 +7,7 @@ import com.eteryun.event.impl.gameoverlay.RenderGameOverlayEvent.ElementType;
 import com.eteryun.event.impl.gameoverlay.TickGameOverlayEvent;
 import com.eteryun.modules.cef.CefManager;
 import com.eteryun.modules.cef.query.QueryTarget;
+import com.eteryun.modules.ui.mixin.gui.GuiAccessor;
 import com.eteryun.utils.PlayerWatcher;
 import com.eteryun.utils.TranslateUtils;
 import com.eteryun.utils.WatcherValue;
@@ -14,6 +15,7 @@ import com.google.gson.*;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
 import org.cef.browser.CefBrowserCustom;
 
 import java.util.ArrayList;
@@ -25,6 +27,8 @@ public class InGameGui {
     public ArrayList<WatcherValue> watcherValues = new ArrayList<>();
     private ArrayList<Runnable> queueUpdates = new ArrayList<>();
     public PlayerWatcher watcherPlayer;
+    public WatcherValue<String> titleWatcher;
+    public WatcherValue<String> subTitleWatcher;
 
     private boolean loaded = false;
 
@@ -41,6 +45,13 @@ public class InGameGui {
         init();
         registerElements();
         this.watcherPlayer = new PlayerWatcher(this::valueUpdate);
+        titleWatcher = new WatcherValue<String>(this::getTitle,
+                newValue -> {
+                    updatePartialNotification("title", newValue);
+                    updatePartialNotification("time", getTitleTime());
+                });
+        subTitleWatcher = new WatcherValue<String>(this::getSubTitle,
+                newValue -> updatePartialNotification("description", newValue));
     }
 
     public <T> void valueUpdate(String name, T value) {
@@ -57,6 +68,7 @@ public class InGameGui {
         HIDDEN_ELEMENTS.add(ElementType.EXPERIENCE);
         HIDDEN_ELEMENTS.add(ElementType.EFFECTS);
         HIDDEN_ELEMENTS.add(ElementType.HOTBAR);
+        HIDDEN_ELEMENTS.add(ElementType.ITEM_NAME);
     }
 
     public void init() {
@@ -103,6 +115,26 @@ public class InGameGui {
         cefBrowser.sendMessage("setUser", GSON.toJson(object));
     }
 
+    public void updatePartialNotification(String name, String value) {
+        if (!loaded) {
+            queueUpdates.add(() -> this.updatePartialNotification(name, value));
+            return;
+        }
+        JsonObject object = new JsonObject();
+        object.addProperty(name, value);
+        cefBrowser.sendMessage("setNotification", GSON.toJson(object));
+    }
+
+    public void updatePartialNotification(String name, Integer value) {
+        if (!loaded) {
+            queueUpdates.add(() -> this.updatePartialNotification(name, value));
+            return;
+        }
+        JsonObject object = new JsonObject();
+        object.addProperty(name, value);
+        cefBrowser.sendMessage("setNotification", GSON.toJson(object));
+    }
+
     @QueryTarget(name = "hud:getTranslate")
     public String getTranslate(JsonObject object) {
         return TranslateUtils.getJson();
@@ -117,12 +149,32 @@ public class InGameGui {
     public void tick(TickGameOverlayEvent event) {
         watcherValues.forEach(WatcherValue::tick);
         watcherPlayer.tick();
+        titleWatcher.tick();
+        subTitleWatcher.tick();
         cefBrowser.wasResized_(minecraft.getWindow().getScreenWidth(), minecraft.getWindow().getScreenHeight());
 
         if (loaded) {
             queueUpdates.forEach(Runnable::run);
             queueUpdates.clear();
         }
+    }
+
+    public String getTitle() {
+        Component title = ((GuiAccessor) minecraft.gui).getTitle();
+        if (title != null)
+            return title.getString();
+        return "";
+    }
+
+    public String getSubTitle() {
+        Component subtitle = ((GuiAccessor) minecraft.gui).getSubtitle();
+        if (subtitle != null)
+            return subtitle.getString();
+        return "";
+    }
+
+    public int getTitleTime() {
+        return ((GuiAccessor) minecraft.gui).getTitleTime();
     }
 
     @EventTarget

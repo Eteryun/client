@@ -22,7 +22,7 @@ public class RenderGameOverlayEvent extends Event {
     }
 
     public enum ElementType {
-        ALL, BOSSINFO, CHAT, PLAYER_LIST, DEBUG, HEALTH, HOTBAR, SPECTATOR_HOTBAR, EXPERIENCE, HEALTHMOUNT, JUMPBAR, EFFECTS
+        ALL, BOSSINFO, CHAT, PLAYER_LIST, DEBUG, HEALTH, HOTBAR, SPECTATOR_HOTBAR, EXPERIENCE, HEALTHMOUNT, JUMPBAR, EFFECTS, ITEM_NAME
     }
 
     private final PoseStack mStack;

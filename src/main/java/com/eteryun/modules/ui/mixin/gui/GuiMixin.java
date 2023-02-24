@@ -11,10 +11,12 @@ import net.minecraft.client.gui.components.ChatComponent;
 import net.minecraft.client.gui.components.DebugScreenOverlay;
 import net.minecraft.client.gui.components.PlayerTabOverlay;
 import net.minecraft.client.gui.components.spectator.SpectatorGui;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.scores.Objective;
 import net.minecraft.world.scores.Scoreboard;
+import org.jetbrains.annotations.Nullable;
+import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -48,6 +50,8 @@ public abstract class GuiMixin {
     @Shadow protected abstract void renderVehicleHealth(PoseStack poseStack);
 
     @Shadow protected abstract void renderEffects(PoseStack poseStack);
+
+    @Shadow private @Nullable Component overlayMessageString;
 
     @Inject(method = "render", at = @At("HEAD"), cancellable = true)
     private void preAllRender(PoseStack poseStack, float partialTicks, CallbackInfo ci) {
@@ -139,6 +143,24 @@ public abstract class GuiMixin {
             this.renderVehicleHealth(poseStack);
             post(ElementType.HEALTHMOUNT, poseStack);
         }
+    }
+
+    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;renderSelectedItemName(Lcom/mojang/blaze3d/vertex/PoseStack;)V"))
+    private void RenderItemName(Gui instance, PoseStack poseStack) {
+        if (!pre(ElementType.ITEM_NAME, poseStack)) {
+            instance.renderSelectedItemName(poseStack);
+            post(ElementType.ITEM_NAME, poseStack);
+        }
+    }
+
+    @Redirect(method = "render", at = @At(value = "FIELD", target = "Lnet/minecraft/client/gui/Gui;overlayMessageString:Lnet/minecraft/network/chat/Component;",  opcode = Opcodes.GETFIELD))
+    private Component getOverlayMessage(Gui instance) {
+        return null;
+    }
+
+    @Redirect(method = "render", at = @At(value = "FIELD", target = "Lnet/minecraft/client/gui/Gui;title:Lnet/minecraft/network/chat/Component;",  opcode = Opcodes.GETFIELD))
+    private Component getTitleMessage(Gui instance) {
+        return null;
     }
 
     @Inject(method = "tick()V", at = @At("HEAD"))

@@ -6,6 +6,7 @@
   "package": "com.eteryun.modules.ui.mixin",
   "mixins": [
     "gui.ConnectScreenMixin",
+    "gui.GuiAccessor",
     "gui.LoadingOverlayMixin",
     "gui.ReceivingLevelScreenMixin",
     "gui.GuiMixin"
