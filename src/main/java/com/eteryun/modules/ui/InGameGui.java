@@ -35,7 +35,7 @@ public class InGameGui {
     private final ArrayList<ElementType> HIDDEN_ELEMENTS = new ArrayList<>();
 
     public InGameGui() {
-        cefBrowser = new CefBrowserCustom(CefManager.cefClient, "http://localhost:3000", true, null);
+        cefBrowser = new CefBrowserCustom(CefManager.cefClient, "https://ui.eteryun.com.br/hud/", true, null);
         cefBrowser.setCloseAllowed();
         cefBrowser.createImmediately();
 
