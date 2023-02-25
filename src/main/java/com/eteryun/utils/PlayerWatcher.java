@@ -81,6 +81,7 @@ public class PlayerWatcher {
         jsonObject.addProperty("damage", itemStack.getDamageValue());
         jsonObject.addProperty("maxDamage", itemStack.getMaxDamage());
         jsonObject.addProperty("quantity", itemStack.getCount());
+        jsonObject.addProperty("isEnchanted", itemStack.isEnchanted());
 
         return jsonObject;
     }
