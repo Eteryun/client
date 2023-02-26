@@ -7,6 +7,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -24,12 +25,12 @@ public class PlayerWatcher {
 
     public PlayerWatcher(Watcher watcher) {
         this.watcher = watcher;
-        watcherPlayer = new WatcherValue<Player>(this::getPlayer, newValue -> {
+        watcherPlayer = new WatcherValue<Player>(() -> minecraft.player, newValue -> {
             this.player = newValue;
             if (this.player != null)
                 registerWatchers();
             else watcherValues.clear();
-        });
+        }, Entity::is);
     }
 
     public void registerWatchers() {
@@ -84,10 +85,6 @@ public class PlayerWatcher {
         jsonObject.addProperty("isEnchanted", itemStack.isEnchanted());
 
         return jsonObject;
-    }
-
-    private Player getPlayer() {
-        return !(this.minecraft.getCameraEntity() instanceof Player) ? null : (Player) this.minecraft.getCameraEntity();
     }
 
     public void tick() {
