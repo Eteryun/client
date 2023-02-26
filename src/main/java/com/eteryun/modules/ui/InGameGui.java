@@ -61,6 +61,8 @@ public class InGameGui {
             updatePartialUser(name, (Number) value);
         else if (value instanceof JsonElement)
             updatePartialUser(name, (JsonElement) value);
+        else if (value instanceof Boolean)
+            updatePartialUser(name, (Boolean) value);
     }
 
     public void registerElements() {
@@ -69,6 +71,8 @@ public class InGameGui {
         HIDDEN_ELEMENTS.add(ElementType.EFFECTS);
         HIDDEN_ELEMENTS.add(ElementType.HOTBAR);
         HIDDEN_ELEMENTS.add(ElementType.ITEM_NAME);
+        HIDDEN_ELEMENTS.add(ElementType.HEALTHMOUNT);
+        HIDDEN_ELEMENTS.add(ElementType.JUMPBAR);
     }
 
     public void init() {
@@ -96,6 +100,16 @@ public class InGameGui {
     }
 
     public void updatePartialUser(String name, Number value) {
+        if (!loaded) {
+            queueUpdates.add(() -> this.updatePartialUser(name, value));
+            return;
+        }
+        JsonObject object = new JsonObject();
+        object.addProperty(name, value);
+        cefBrowser.sendMessage("setUser", GSON.toJson(object));
+    }
+
+    public void updatePartialUser(String name, Boolean value) {
         if (!loaded) {
             queueUpdates.add(() -> this.updatePartialUser(name, value));
             return;

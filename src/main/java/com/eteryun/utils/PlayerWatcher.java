@@ -8,6 +8,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -45,6 +46,12 @@ public class PlayerWatcher {
         watcherValues.add(new WatcherValue<JsonArray>(() -> effectInstancesToJson(player.getActiveEffects()),
                 newValue -> watcher.onChange("effects", newValue)));
         watcherValues.add(new WatcherValue<JsonObject>(() -> hotbarJson(player.getInventory()), newValue -> watcher.onChange("hotbar", newValue)));
+        watcherValues.add(new WatcherValue<Boolean>(() -> inVehicle(),
+                newValue -> watcher.onChange("isVehicle", newValue)));
+        watcherValues.add(new WatcherValue<Float>(() -> getPlayerVehicleWithHealth() != null ? getPlayerVehicleWithHealth().getHealth() : 0,
+                newValue -> watcher.onChange("vehicleHealth", newValue)));
+        watcherValues.add(new WatcherValue<Float>(() -> getPlayerVehicleWithHealth() != null ? getPlayerVehicleWithHealth().getMaxHealth() : 0,
+                newValue -> watcher.onChange("vehicleMaxHealth", newValue)));
 
         watcherValues.forEach(WatcherValue::notifyWatcher);
     }
@@ -85,6 +92,26 @@ public class PlayerWatcher {
         jsonObject.addProperty("isEnchanted", itemStack.isEnchanted());
 
         return jsonObject;
+    }
+
+    public boolean inVehicle() {
+        Entity entity = getPlayerVehicleWithHealth();
+        if (entity == null) return false;
+        return entity.showVehicleHealth();
+    }
+
+    private LivingEntity getPlayerVehicleWithHealth() {
+        Player player = minecraft.player;
+        if (player != null) {
+            Entity entity = player.getVehicle();
+            if (entity == null) {
+                return null;
+            }
+            if (entity instanceof LivingEntity) {
+                return (LivingEntity) entity;
+            }
+        }
+        return null;
     }
 
     public void tick() {
