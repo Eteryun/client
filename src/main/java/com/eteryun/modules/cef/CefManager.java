@@ -48,6 +48,11 @@ public class CefManager implements IModule {
     }
 
     @Override
+    public String name() {
+        return "cef";
+    }
+
+    @Override
     public void preInit() {
 
     }

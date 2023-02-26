@@ -9,6 +9,7 @@ import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(Options.class)
@@ -18,8 +19,18 @@ public class OptionsMixin {
     @Shadow
     public KeyMapping[] keyMappings;
 
+    @Shadow public boolean autoJump;
+
+    @Shadow public int guiScale;
+
     @Inject(method = "load", at = @At("HEAD"))
     public void load(CallbackInfo ci) {
         this.keyMappings = KeyMappingsHelper.process(this.keyMappings);
+    }
+
+    @Inject(method = "processOptions", at = @At("RETURN"))
+    public void processOptionsMod(CallbackInfo ci) {
+        this.autoJump = false;
+        this.guiScale = 0;
     }
 }

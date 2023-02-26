@@ -17,6 +17,11 @@ public class BacktooModule implements IModule {
     private Minecraft minecraft = Minecraft.getInstance();
 
     @Override
+    public String name() {
+        return "backtoo";
+    }
+
+    @Override
     public void preInit() {
         PacketsProtocol.registerPacket(PacketFlow.SERVERBOUND, ServerboundPacketPlayerAction.class, ServerboundPacketPlayerAction::new);
         KeyMappingsHelper.registerKeyMapping(KEY_BACK_TOOL);

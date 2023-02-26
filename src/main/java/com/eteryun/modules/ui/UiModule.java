@@ -19,6 +19,11 @@ public class UiModule implements IModule {
     InGameGui gui;
 
     @Override
+    public String name() {
+        return "ui";
+    }
+
+    @Override
     public void preInit() {
         EventManager.register(this);
     }
@@ -76,5 +81,9 @@ public class UiModule implements IModule {
         }
 
         return null;
+    }
+
+    public InGameGui getGui() {
+        return gui;
     }
 }
