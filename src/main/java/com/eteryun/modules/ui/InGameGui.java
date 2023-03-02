@@ -149,6 +149,10 @@ public class InGameGui {
         cefBrowser.sendMessage("setNotification", GSON.toJson(object));
     }
 
+    public void sendMessage(String name, Object obj) {
+        cefBrowser.sendMessage(name, obj);
+    }
+
     @QueryTarget(name = "hud:getTranslate")
     public String getTranslate(JsonObject object) {
         return TranslateUtils.getJson();

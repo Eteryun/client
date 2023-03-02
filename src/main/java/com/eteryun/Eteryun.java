@@ -3,6 +3,7 @@ package com.eteryun;
 import com.eteryun.modules.IModule;
 import com.eteryun.modules.backtoo.BacktooModule;
 import com.eteryun.modules.cef.CefManager;
+import com.eteryun.modules.skills.SkillsModule;
 import com.eteryun.modules.stats.StatsModule;
 import com.eteryun.modules.ui.UiModule;
 import org.apache.logging.log4j.LogManager;
@@ -53,5 +54,6 @@ public class Eteryun {
         modules.add(new BacktooModule());
         modules.add(new UiModule());
         modules.add(new StatsModule());
+        modules.add(new SkillsModule());
     }
 }

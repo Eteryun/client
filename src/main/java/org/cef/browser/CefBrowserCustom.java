@@ -2,6 +2,9 @@ package org.cef.browser;
 
 import com.eteryun.modules.cef.CefManager;
 import com.eteryun.modules.cef.UnsafeExample;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import org.cef.CefClient;
 import org.cef.browser.lwjgl.CefRendererLwjgl;
 import org.cef.callback.CefDragData;
@@ -22,6 +25,7 @@ import java.util.concurrent.CompletableFuture;
 import static org.lwjgl.glfw.GLFW.*;
 
 public class CefBrowserCustom extends CefBrowser_N implements CefRenderHandler {
+    private static Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private final ICefRenderer renderer_;
     private boolean justCreated_ = false;
     private final Rectangle browser_rect_ = new Rectangle(0, 0, 1, 1);
@@ -319,5 +323,11 @@ public class CefBrowserCustom extends CefBrowser_N implements CefRenderHandler {
 
     public void sendMessage(String type, Object obj) {
         executeJavaScript("window.postMessage({ detail: { type: '" + type + "', content: " + obj + " } }, '*');", "", 0);
+    }
+
+    public static String createDefaultDto(String value) {
+        JsonObject object = new JsonObject();
+        object.addProperty("value", value);
+        return GSON.toJson(object);
     }
 }
