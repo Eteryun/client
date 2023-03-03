@@ -4,15 +4,14 @@ import com.eteryun.Eteryun;
 import com.eteryun.event.EventManager;
 import com.eteryun.event.impl.screen.ScreenOpenEvent;
 import com.eteryun.utils.Constants;
+import net.minecraft.client.HotbarManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import org.jetbrains.annotations.Nullable;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
@@ -55,5 +54,10 @@ public abstract class MinecraftMixin {
             ci.cancel();
             setScreen(event.getScreen());
         }
+    }
+
+    @ModifyConstant(method = "handleKeybinds", constant = @Constant(intValue = 9))
+    private int handleKeybind(int constant) {
+        return HotbarManager.NUM_HOTBAR_GROUPS;
     }
 }

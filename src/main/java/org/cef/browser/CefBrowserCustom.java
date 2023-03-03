@@ -25,7 +25,7 @@ import java.util.concurrent.CompletableFuture;
 import static org.lwjgl.glfw.GLFW.*;
 
 public class CefBrowserCustom extends CefBrowser_N implements CefRenderHandler {
-    private static Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+    public static Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private final ICefRenderer renderer_;
     private boolean justCreated_ = false;
     private final Rectangle browser_rect_ = new Rectangle(0, 0, 1, 1);

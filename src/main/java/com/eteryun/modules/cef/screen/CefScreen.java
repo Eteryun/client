@@ -1,10 +1,12 @@
 package com.eteryun.modules.cef.screen;
 
+import com.eteryun.event.EventManager;
 import com.eteryun.modules.cef.CefManager;
 import com.eteryun.modules.cef.query.QueryTarget;
 import com.eteryun.utils.TranslateUtils;
 import com.google.gson.JsonObject;
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.chat.NarratorChatListener;
 import net.minecraft.client.gui.screens.Screen;
@@ -25,6 +27,7 @@ public class CefScreen extends Screen {
         cefBrowser.createImmediately();
 
         CefManager.getInstance().registerQueryHandler(this);
+        EventManager.register(this);
     }
 
     public CefScreen(String url, Component component) {
@@ -34,6 +37,7 @@ public class CefScreen extends Screen {
         cefBrowser.createImmediately();
 
         CefManager.getInstance().registerQueryHandler(this);
+        EventManager.register(this);
     }
 
     public CefScreen() {
@@ -135,6 +139,10 @@ public class CefScreen extends Screen {
     }
 
     public void keyChanged(int keyCode, int scanCode, int modifiers, boolean pressed) {
+        if (pressed) {
+            InputConstants.Key key = InputConstants.Type.MOUSE.getOrCreate(keyCode);
+            onKeyDown(key, false);
+        }
         String keystr = GLFW.glfwGetKeyName(keyCode, scanCode);
 
         char key = keystr == null || keystr.length() == 0 ? 0 : keystr.charAt(keystr.length() - 1);
@@ -162,8 +170,18 @@ public class CefScreen extends Screen {
         isLoaded = true;
     }
 
+    public void onKeyDown(InputConstants.Key key, boolean isMouse) {
+        JsonObject json = new JsonObject();
+        json.addProperty("code", key.getValue());
+        json.addProperty("scanCode", -1);
+        json.addProperty("translateKey", key.getName());
+        json.addProperty("isMouse", isMouse);
+        cefBrowser.sendMessage("onKeyDown", CefBrowserCustom.GSON.toJson(json));
+    }
+
     public void remove(){
         cefBrowser.close(true);
         CefManager.getInstance().unregisterQueryHandler(this);
+        EventManager.unregister(this);
     }
 }
