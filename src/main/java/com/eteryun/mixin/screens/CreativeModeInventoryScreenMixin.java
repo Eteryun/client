@@ -10,6 +10,6 @@ import org.spongepowered.asm.mixin.injection.ModifyConstant;
 public class CreativeModeInventoryScreenMixin {
     @ModifyConstant(method = "selectTab", constant = {@Constant(intValue = 9, ordinal = 0), @Constant(intValue = 9, ordinal = 1)})
     private int selectTabMixin(int constant) {
-        return HotbarManager.NUM_HOTBAR_GROUPS;
+        return 8;
     }
 }

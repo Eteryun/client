@@ -17,7 +17,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Minecraft.class)
 public abstract class MinecraftMixin {
-    @Shadow public abstract void setScreen(@Nullable Screen screen);
+    @Shadow
+    public abstract void setScreen(@Nullable Screen screen);
 
     private boolean isStarted = false;
 
@@ -58,6 +59,6 @@ public abstract class MinecraftMixin {
 
     @ModifyConstant(method = "handleKeybinds", constant = @Constant(intValue = 9))
     private int handleKeybind(int constant) {
-        return HotbarManager.NUM_HOTBAR_GROUPS;
+        return 8;
     }
 }

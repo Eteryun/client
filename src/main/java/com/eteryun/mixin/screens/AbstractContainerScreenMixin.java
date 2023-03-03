@@ -1,6 +1,5 @@
 package com.eteryun.mixin.screens;
 
-import net.minecraft.client.HotbarManager;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.Constant;
@@ -10,11 +9,11 @@ import org.spongepowered.asm.mixin.injection.ModifyConstant;
 public class AbstractContainerScreenMixin {
     @ModifyConstant(method = "checkHotbarMouseClicked", constant = @Constant(intValue = 9))
     private int checkHotbarMouseClickedMixin(int constant) {
-        return HotbarManager.NUM_HOTBAR_GROUPS;
+        return 8;
     }
 
     @ModifyConstant(method = "checkHotbarKeyPressed", constant = @Constant(intValue = 9))
     private int checkHotbarKeyPressedMixin(int constant) {
-        return HotbarManager.NUM_HOTBAR_GROUPS;
+        return 8;
     }
 }

@@ -18,15 +18,7 @@ import java.util.Arrays;
 @Mixin(HotbarManager.class)
 public class HotbarManagerMixin {
     @Mutable
-    @Shadow @Final public static int NUM_HOTBAR_GROUPS;
-
-    @Mutable
     @Shadow @Final private Hotbar[] hotbars;
-
-    @Inject(method = "<clinit>", at = @At("RETURN"))
-    private static void clinit(CallbackInfo ci) {
-        NUM_HOTBAR_GROUPS = 8;
-    }
 
     @Inject(method = "<init>", at = @At("RETURN"))
     private void init(CallbackInfo ci) {
