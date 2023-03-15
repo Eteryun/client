@@ -2,6 +2,7 @@ package com.eteryun;
 
 import com.eteryun.modules.IModule;
 import com.eteryun.modules.backtoo.BacktooModule;
+import com.eteryun.modules.boss.BossModule;
 import com.eteryun.modules.cef.CefManager;
 import com.eteryun.modules.skills.SkillsModule;
 import com.eteryun.modules.stats.StatsModule;
@@ -55,5 +56,6 @@ public class Eteryun {
         modules.add(new UiModule());
         modules.add(new StatsModule());
         modules.add(new SkillsModule());
+        modules.add(new BossModule());
     }
 }

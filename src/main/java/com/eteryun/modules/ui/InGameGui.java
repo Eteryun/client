@@ -150,6 +150,10 @@ public class InGameGui {
     }
 
     public void sendMessage(String name, Object obj) {
+        if (!loaded) {
+            queueUpdates.add(() -> this.sendMessage(name, obj));
+            return;
+        }
         cefBrowser.sendMessage(name, obj);
     }
 

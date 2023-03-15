@@ -18,14 +18,12 @@ public class Main {
         arguments.add("--launchTarget");
         arguments.add("eteryunlaunch");
 
-
-
         if (Boolean.getBoolean("fabric.development")) {
             arguments.add("--version");
             arguments.add("dev");
 
             arguments.add("--username");
-            arguments.add(username);
+            arguments.add("Eteryun");
 
             arguments.add("--uuid");
             arguments.add(Player.createPlayerUUID(username).toString());

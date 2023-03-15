@@ -32,10 +32,9 @@ public class EteryunTransformationService implements ITransformationService {
         Mixins.addConfiguration("playerscale.mixins.json");
         Mixins.addConfiguration("backtoo.mixins.json");
         Mixins.addConfiguration("ui.mixins.json");
+        Mixins.addConfiguration("boss.mixins.json");
 
         final MixinEnvironment env = MixinEnvironment.getDefaultEnvironment();
-
-        System.out.println(env.getObfuscationContext());
 
         if (env.getObfuscationContext() == null) {
             env.setObfuscationContext("named:official");
